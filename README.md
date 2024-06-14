@@ -2,6 +2,16 @@
 
 This project aims to build JavaScript classes for a banking application to practice Object-Oriented Programming (OOP) concepts.
 
+Complete the banking application challenge to practice class and TypeScript
+
+## Installation
+
+1. Create class in Javascript first then convert this assignment to TypeScript
+2. You can simply run `index.js` by `Code Runner`
+3. After clone the project from your forked repo, run `npm install` or `yarn`
+4. After convert the assignment to TypeScript, check the scripts in `package.json` to run the suitable command for each challenge
+5. Run `npm run watch` to see code running in watch mode, or check `package.json` for extra scripts
+
 ## Level 1: Basic Requirements
 
 ### Implement the following classes:
