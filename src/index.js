@@ -49,13 +49,39 @@ class Customer {
   };
 }
 
-const customer1 = new Customer("Alice", 1);
+class Branch {
+  #name;
+  #customers;
 
-console.log(customer1.getId());
-console.log(customer1.getName());
-console.log(customer1.getBalance());
-console.log(customer1.addTransaction(100));
-console.log(customer1.getBalance());
-console.log(customer1.addTransaction(-66));
-console.log(customer1.getBalance());
-console.log(customer1.getTransactions());
+  constructor(name) {
+    this.#name = name;
+    this.#customers = [];
+  }
+
+  getName = () => {
+    return this.#name;
+  };
+
+  getCustomers = () => {
+    return this.#customers;
+  };
+
+  addCustomer = (customer) => {
+    if (this.#customers.includes(customer)) {
+      return false;
+    } else {
+      this.#customers.push(customer);
+      return true;
+    }
+  };
+
+  addCustomerTransaction = (customerId, amount) => {
+    const customer = this.#customers.find((c) => (c.getId() === customerId));
+    if (customer) {
+      customer.addTransaction(amount);
+      return true;
+    } else {
+      return false;
+    }
+  };
+}
