@@ -40,12 +40,11 @@ class Customer {
 
   addTransaction = (amount) => {
     const newBalance = this.getBalance() + amount;
-    if (newBalance < 0) {
-      return false;
-    } else {
+    if (newBalance >= 0) {
       this.#transactions.push(new Transaction(amount));
       return true;
     }
+    return false;
   };
 }
 
@@ -67,21 +66,83 @@ class Branch {
   };
 
   addCustomer = (customer) => {
-    if (this.#customers.includes(customer)) {
-      return false;
-    } else {
+    if (!this.#customers.includes(customer)) {
       this.#customers.push(customer);
       return true;
     }
+    return false;
   };
 
   addCustomerTransaction = (customerId, amount) => {
-    const customer = this.#customers.find((c) => (c.getId() === customerId));
+    const customer = this.#customers.find((c) => c.getId() === customerId);
     if (customer) {
       customer.addTransaction(amount);
       return true;
-    } else {
-      return false;
     }
+    return false;
   };
 }
+
+class Bank {
+  #name;
+  #branches;
+
+  constructor(name) {
+    this.#name = name;
+    this.#branches = [];
+  }
+
+  addBranch = (branch) => {
+    if (!this.#branches.includes(branch)) {
+      this.#branches.push(branch);
+      return true;
+    }
+    return false;
+  };
+
+  addCustomer = (branch, customer) => {
+    if (
+      this.#branches.includes(branch) &&
+      !branch.getCustomers().includes(customer)
+    ) {
+      branch.addCustomer(customer);
+      return true;
+    }
+    return false;
+  };
+
+  addCustomerTransaction = (branch, customerId, amount) => {};
+
+  findBranchByName = (branchName) => {
+    const result = this.#branches.find(
+      (branch) => branch.getName() === branchName
+    );
+    return result || null;
+  };
+
+  checkBranch = (branch) => {
+    return this.#branches.includes(branch);
+  };
+
+  listCustomers = (branch, includeTransactions) => {
+    if (!branch.getCustomers().length) {
+      console.log("No customers found.");
+      return;
+    }
+
+    branch.getCustomers().forEach((customer) => {
+      console.log(`ID: ${customer.getId()} Name: ${customer.getName()}`);
+
+      if (includeTransactions) {
+        customer.getTransactions().forEach((transaction) => {
+          console.log(`Date: ${transaction.date.toLocaleDateString()} Amount:${transaction.amount}`);
+        });
+      }
+    });
+  };
+}
+
+// addCustomerTransaction(branch: Branch, customerId: string, amount: number): boolean Description:
+// Adds a transaction of the amount for the customer with the specified customerId
+// in the given branch.
+
