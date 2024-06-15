@@ -111,7 +111,12 @@ class Bank {
     return false;
   };
 
-  addCustomerTransaction = (branch, customerId, amount) => {};
+  addCustomerTransaction = (branch, customerId, amount) => {
+    if (this.checkBranch(branch)) {
+      return branch.addCustomerTransaction(customerId, amount);
+    }
+    return false;
+  };
 
   findBranchByName = (branchName) => {
     const result = this.#branches.find(
@@ -135,14 +140,13 @@ class Bank {
 
       if (includeTransactions) {
         customer.getTransactions().forEach((transaction) => {
-          console.log(`Date: ${transaction.date.toLocaleDateString()} Amount:${transaction.amount}`);
+          console.log(
+            `Date: ${transaction.date.toLocaleDateString()} Amount:${
+              transaction.amount
+            }`
+          );
         });
       }
     });
   };
 }
-
-// addCustomerTransaction(branch: Branch, customerId: string, amount: number): boolean Description:
-// Adds a transaction of the amount for the customer with the specified customerId
-// in the given branch.
-
