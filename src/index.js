@@ -1,4 +1,4 @@
-class Transaction {
+export class Transaction {
   amount;
   date;
 
@@ -8,7 +8,7 @@ class Transaction {
   }
 }
 
-class Customer {
+export class Customer {
   #name;
   #id;
   #transactions;
@@ -32,10 +32,12 @@ class Customer {
   };
 
   getBalance = () => {
-    return this.#transactions.reduce(
+    const sum = this.#transactions.reduce(
       (total, transaction) => total + transaction.amount,
       0
     );
+
+    return sum;
   };
 
   addTransaction = (amount) => {
@@ -48,7 +50,7 @@ class Customer {
   };
 }
 
-class Branch {
+export class Branch {
   #name;
   #customers;
 
@@ -83,7 +85,7 @@ class Branch {
   };
 }
 
-class Bank {
+export class Bank {
   #name;
   #branches;
 
@@ -119,10 +121,15 @@ class Bank {
   };
 
   findBranchByName = (branchName) => {
-    const result = this.#branches.find(
-      (branch) => branch.getName() === branchName
-    );
-    return result || null;
+    const result = this.#branches.find((branch) => {
+      return branch.getName().toLowerCase().includes(branchName.toLowerCase());
+    });
+    if (result) {
+      console.log(`Search result for "${branchName}":  ${result.getName()}.`);
+    } else {
+      console.log(`No branches found matching "${branchName}".`);
+    }
+    return result?.getName() || null;
   };
 
   checkBranch = (branch) => {
@@ -136,17 +143,26 @@ class Bank {
     }
 
     branch.getCustomers().forEach((customer) => {
-      console.log(`ID: ${customer.getId()} Name: ${customer.getName()}`);
+      console.log(
+        // `\nID: ${customer.getId()} Name: ${customer.getName()} Branch: ${branch.getName()}`
+        `\n.: Branch: ${branch.getName()} :.\n\tID: ${customer.getId()}, Name: ${customer.getName()} `
+      );
 
-      if (includeTransactions) {
+      if (!customer.getTransactions().length) {
+        console.log(
+          `\t\tThere is no transactions for ${customer.getName()} (ID: ${customer.getId()}).`
+        );
+      } else if (includeTransactions) {
+        // console.log(customer.getTransactions());
         customer.getTransactions().forEach((transaction) => {
           console.log(
-            `Date: ${transaction.date.toLocaleDateString()} Amount:${
+            `\t\tDate: ${transaction.date.toLocaleDateString()} Amount: ${
               transaction.amount
             }`
           );
         });
       }
     });
+    return null;
   };
 }
