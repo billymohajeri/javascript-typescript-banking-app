@@ -3,9 +3,23 @@ export class Transaction {
   date;
 
   constructor(amount, date = new Date()) {
+    if (!this.#validateTransactionAmount(amount)) {
+      throw new Error("Invalid transaction amount");
+    }
+    if (!this.#validateTransactionDate(date)) {
+      throw new Error("Invalid transaction date");
+    }
     this.amount = amount;
     this.date = date;
   }
+
+  #validateTransactionAmount = (amount) => {
+    return typeof amount === "number" && !isNaN(amount);
+  };
+
+  #validateTransactionDate = (date) => {
+    return date instanceof Date && !isNaN(date);
+  };
 }
 
 export class Customer {
@@ -36,7 +50,6 @@ export class Customer {
       (total, transaction) => total + transaction.amount,
       0
     );
-
     return sum;
   };
 
@@ -141,12 +154,11 @@ export class Bank {
       console.log("No customers found.");
       return;
     }
-
+    console.log(
+      `\n\n>>> ${branch.getName()}: ${branch.getCustomers().length} customer(s)`
+    );
     branch.getCustomers().forEach((customer) => {
-      console.log(
-        // `\nID: ${customer.getId()} Name: ${customer.getName()} Branch: ${branch.getName()}`
-        `\n.: Branch: ${branch.getName()} :.\n\tID: ${customer.getId()}, Name: ${customer.getName()} `
-      );
+      console.log(`\n\tID: ${customer.getId()}, Name: ${customer.getName()}`);
 
       if (!customer.getTransactions().length) {
         console.log(
@@ -156,7 +168,7 @@ export class Bank {
         // console.log(customer.getTransactions());
         customer.getTransactions().forEach((transaction) => {
           console.log(
-            `\t\tDate: ${transaction.date.toLocaleDateString()} Amount: ${
+            `\t\tDate: ${transaction.date?.toLocaleDateString()} Amount: ${
               transaction.amount
             }`
           );

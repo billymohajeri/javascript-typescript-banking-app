@@ -2,7 +2,7 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "watch": "nodemon src/index.ts",
+    "watch": "nodemon src/bank.js",
     "build": "tsc",
     "start": "node build/index.js"
   },
