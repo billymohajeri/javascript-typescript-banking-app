@@ -28,10 +28,26 @@ export class Customer {
   #transactions;
 
   constructor(name, id) {
+    if (!this.#validateCustomerName(name)) {
+      throw new Error("Invalid customer name");
+    }
+
+    if (!this.#validateCustomerId(id)) {
+      throw new Error("Invalid customer ID");
+    }
+
     this.#name = name;
     this.#id = id;
     this.#transactions = [];
   }
+
+  #validateCustomerName = (name) => {
+    return typeof name === "string" && name.trim() !== "";
+  };
+
+  #validateCustomerId = (id) => {
+    return typeof id === "number" && !isNaN(id);
+  };
 
   getName = () => {
     return this.#name;
@@ -140,7 +156,7 @@ export class Bank {
     if (result) {
       console.log(`Search result for "${branchName}":  ${result.getName()}.`);
     } else {
-      console.log(`No branches found matching "${branchName}".`);
+      console.log(`\nNo branches found matching "${branchName}".`);
     }
     return result?.getName() || null;
   };
@@ -155,14 +171,14 @@ export class Bank {
       return;
     }
     console.log(
-      `\n\n>>> ${branch.getName()}: ${branch.getCustomers().length} customer(s)`
+      `\n>>> ${branch.getName()}: ${branch.getCustomers().length} customer(s)`
     );
     branch.getCustomers().forEach((customer) => {
       console.log(`\n\tID: ${customer.getId()}, Name: ${customer.getName()}`);
 
       if (!customer.getTransactions().length) {
         console.log(
-          `\t\tThere is no transactions for ${customer.getName()} (ID: ${customer.getId()}).`
+          `\t\tThere is no transactions for ${customer.getName()} (ID: ${customer.getId()}).\n`
         );
       } else if (includeTransactions) {
         // console.log(customer.getTransactions());
