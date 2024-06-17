@@ -46,7 +46,7 @@ export class Customer {
   };
 
   #validateCustomerId = (id) => {
-    return typeof id === "number" && !isNaN(id);
+    return Number.isInteger(id) && id > 0;
   };
 
   getName = () => {
@@ -70,12 +70,19 @@ export class Customer {
   };
 
   addTransaction = (amount) => {
+    if (!this.#validateTransactionAmount(amount)) {
+      throw new Error("Invalid transaction amount");
+    }
     const newBalance = this.getBalance() + amount;
     if (newBalance >= 0) {
       this.#transactions.push(new Transaction(amount));
       return true;
     }
     return false;
+  };
+
+  #validateTransactionAmount = (amount) => {
+    return typeof amount === "number" && !isNaN(amount);
   };
 }
 
