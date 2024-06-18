@@ -111,16 +111,41 @@ export class Branch {
   };
 
   addCustomer = (customer) => {
-    if (!this.#customers.includes(customer)) {
+    if (
+      !this.#customers.includes(customer) &&
+      this.#validateCustomer(customer)
+    ) {
       this.#customers.push(customer);
       return true;
     }
     return false;
   };
-  
 
+  #validateCustomerId(id) {
+    return typeof id === "number" && !isNaN(id);
+  }
+
+  #validateCustomer(customer) {
+    return (
+      customer instanceof Customer &&
+      this.#validateCustomerId(customer.getId()) &&
+      typeof customer.getName() === "string" &&
+      customer.getName().trim() !== ""
+    );
+  }
+
+  #validateTransactionAmount(amount) {
+    return typeof amount === "number" && !isNaN(amount);
+  }
 
   addCustomerTransaction = (customerId, amount) => {
+    if (!this.#validateCustomerId) {
+      throw new Error("Invalid customer ID");
+    }
+    if (!this.#validateTransactionAmount) {
+      throw new Error("Invalid transaction amount");
+    }
+
     const customer = this.#customers.find((c) => c.getId() === customerId);
     if (customer) {
       customer.addTransaction(amount);
