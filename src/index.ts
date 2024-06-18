@@ -1,8 +1,8 @@
 export class Transaction {
-  amount;
-  date;
+  amount: number;
+  date: Date;
 
-  constructor(amount, date = new Date()) {
+  constructor(amount: number, date = new Date()) {
     if (!this.#validateTransactionAmount(amount)) {
       throw new Error("Invalid transaction amount");
     }
@@ -13,140 +13,137 @@ export class Transaction {
     this.date = date;
   }
 
-  #validateTransactionAmount = (amount) => {
+  #validateTransactionAmount = (amount: number) => {
     return typeof amount === "number" && !isNaN(amount);
   };
 
-  #validateTransactionDate = (date) => {
-    return date instanceof Date && !isNaN(date);
+  #validateTransactionDate = (date: Date) => {
+    return date instanceof Date;
   };
 }
 
 export class Customer {
-  #name;
-  #id;
-  #transactions;
+  private name: string;
+  private id: number;
+  private transactions: Transaction[];
 
-  constructor(name, id) {
-    if (!this.#validateCustomerName(name)) {
+  constructor(name: string, id: number) {
+    if (!this.validateCustomerName(name)) {
       throw new Error("Invalid customer name");
     }
 
-    if (!this.#validateCustomerId(id)) {
+    if (!this.validateCustomerId(id)) {
       throw new Error("Invalid customer ID");
     }
 
-    this.#name = name;
-    this.#id = id;
-    this.#transactions = [];
+    this.name = name;
+    this.id = id;
+    this.transactions = [];
   }
 
-  #validateCustomerName = (name) => {
+  private validateCustomerName = (name: string) => {
     return typeof name === "string" && name.trim() !== "";
   };
 
-  #validateCustomerId = (id) => {
+  private validateCustomerId = (id: number) => {
     return Number.isInteger(id) && id > 0;
   };
 
   getName = () => {
-    return this.#name;
+    return this.name;
   };
 
   getId = () => {
-    return this.#id;
+    return this.id;
   };
 
   getTransactions = () => {
-    return this.#transactions;
+    return this.transactions;
   };
 
   getBalance = () => {
-    const sum = this.#transactions.reduce(
+    const sum = this.transactions.reduce(
       (total, transaction) => total + transaction.amount,
       0
     );
     return sum;
   };
 
-  addTransaction = (amount) => {
-    if (!this.#validateTransactionAmount(amount)) {
+  addTransaction = (amount: number) => {
+    if (!this.validateTransactionAmount(amount)) {
       throw new Error("Invalid transaction amount");
     }
     const newBalance = this.getBalance() + amount;
     if (newBalance >= 0) {
-      this.#transactions.push(new Transaction(amount));
+      this.transactions.push(new Transaction(amount));
       return true;
     }
     return false;
   };
 
-  #validateTransactionAmount = (amount) => {
+  private validateTransactionAmount = (amount: number) => {
     return typeof amount === "number" && !isNaN(amount);
   };
 }
 
 export class Branch {
-  #name;
-  #customers;
+  private name: string;
+  private customers: Customer[];
 
-  constructor(name) {
-    if (!this.#validateBranchName(name)) {
+  constructor(name: string) {
+    if (!this.validateBranchName(name)) {
       throw new Error("Invalid branch name");
     }
-    this.#name = name;
-    this.#customers = [];
+    this.name = name;
+    this.customers = [];
   }
 
-  #validateBranchName(branchName) {
+  private validateBranchName(branchName: string) {
     return typeof branchName === "string" && branchName.trim() !== "";
   }
 
   getName = () => {
-    return this.#name;
+    return this.name;
   };
 
   getCustomers = () => {
-    return this.#customers;
+    return this.customers;
   };
 
-  addCustomer = (customer) => {
-    if (
-      !this.#customers.includes(customer) &&
-      this.#validateCustomer(customer)
-    ) {
-      this.#customers.push(customer);
+  addCustomer = (customer: Customer) => {
+    if (!this.customers.includes(customer) && this.validateCustomer(customer)) {
+      this.customers.push(customer);
       return true;
     }
     return false;
   };
 
-  #validateCustomerId(id) {
+  private validateCustomerId(id: number) {
     return typeof id === "number" && !isNaN(id);
   }
 
-  #validateCustomer(customer) {
+  private validateCustomer(customer: Customer) {
     return (
       customer instanceof Customer &&
-      this.#validateCustomerId(customer.getId()) &&
+      this.validateCustomerId(customer.getId()) &&
       typeof customer.getName() === "string" &&
       customer.getName().trim() !== ""
     );
   }
 
-  #validateTransactionAmount(amount) {
+  validateTransactionAmount(amount: number) {
     return typeof amount === "number" && !isNaN(amount);
   }
 
-  addCustomerTransaction = (customerId, amount) => {
-    if (!this.#validateCustomerId) {
+  addCustomerTransaction = (customerId: number, amount: number) => {
+    if (!this.validateCustomerId(customerId)) {
       throw new Error("Invalid customer ID");
     }
-    if (!this.#validateTransactionAmount) {
+    if (!this.validateTransactionAmount(amount)) {
       throw new Error("Invalid transaction amount");
     }
 
-    const customer = this.#customers.find((c) => c.getId() === customerId);
+    const customer = this.customers.find((c) => c.getId() === customerId);
     if (customer) {
       return customer.addTransaction(amount);
     }
@@ -154,39 +151,39 @@ export class Branch {
 }
 
 export class Bank {
-  #name;
-  #branches;
+  private name: string;
+  private branches: Branch[];
 
-  constructor(name) {
-    if (!this.#validateName(name)) {
+  constructor(name: string) {
+    if (!this.validateName(name)) {
       throw new Error("Invalid bank name");
     }
-    this.#name = name;
-    this.#branches = [];
+    this.name = name;
+    this.branches = [];
   }
 
-  #validateName(name) {
+  validateName(name: string) {
     return typeof name === "string" && name.trim() !== "";
   }
 
-  addBranch = (branch) => {
-    if (this.#validateBranch && !this.#branches.includes(branch)) {
-      this.#branches.push(branch);
+  addBranch = (branch: Branch) => {
+    if (this.validateBranch(branch) && !this.branches.includes(branch)) {
+      this.branches.push(branch);
       return true;
     }
     return false;
   };
 
-  #validateBranch(branch) {
+  private validateBranch(branch: Branch) {
     return branch instanceof Branch;
   }
 
-  addCustomer = (branch, customer) => {
+  addCustomer = (branch: Branch, customer: Customer) => {
     if (
-      this.#branches.includes(branch) &&
+      this.branches.includes(branch) &&
       !branch.getCustomers().includes(customer) &&
-      this.#validateCustomer(customer) &&
-      this.#validateBranch(branch)
+      this.validateCustomer(customer) &&
+      this.validateBranch(branch)
     ) {
       branch.addCustomer(customer);
       return true;
@@ -194,35 +191,39 @@ export class Bank {
     return false;
   };
 
-  #validateCustomer(customer) {
+  validateCustomer(customer: Customer) {
     return customer instanceof Customer;
   }
 
-  #validateCustomerId(id) {
+  private validateCustomerId(id: number) {
     return typeof id === "number" && !isNaN(id);
   }
 
-  #validateTransactionAmount(amount) {
+  validateTransactionAmount(amount: number) {
     return typeof amount === "number" && !isNaN(amount);
   }
 
-  addCustomerTransaction = (branch, customerId, amount) => {
+  addCustomerTransaction = (
+    branch: Branch,
+    customerId: number,
+    amount: number
+  ) => {
     if (
-      this.#validateBranch(branch) &&
+      this.validateBranch(branch) &&
       this.checkBranch(branch) &&
-      this.#validateCustomerId &&
-      this.#validateTransactionAmount
+      this.validateCustomerId(customerId) &&
+      this.validateTransactionAmount(amount)
     ) {
       return branch.addCustomerTransaction(customerId, amount);
     }
     return false;
   };
 
-  findBranchByName = (branchName) => {
-    if (!this.#validateName(branchName)) {
+  findBranchByName = (branchName: string) => {
+    if (!this.validateName(branchName)) {
       throw new Error("Invalid branch name");
     }
-    const result = this.#branches.find((branch) => {
+    const result = this.branches.find((branch) => {
       return branch.getName().toLowerCase().includes(branchName.toLowerCase());
     });
     if (result) {
@@ -233,19 +234,19 @@ export class Bank {
     return result?.getName() || null;
   };
 
-  checkBranch = (branch) => {
-    if (!this.#validateBranch(branch)) {
+  checkBranch = (branch: Branch) => {
+    if (!this.validateBranch(branch)) {
       throw new Error("Invalid branch");
     }
-    return this.#branches.includes(branch);
+    return this.branches.includes(branch);
   };
 
-  listCustomers = (branch, includeTransactions) => {
-    if (!this.#validateBranch(branch)) {
+  listCustomers = (branch: Branch, includeTransactions: boolean) => {
+    if (!this.validateBranch(branch)) {
       throw new Error("Invalid branch");
     }
 
-    if (!this.#validateIncludeTransactions(includeTransactions)) {
+    if (!this.validateIncludeTransactions(includeTransactions)) {
       throw new Error(
         "Invalid parameter, includeTransactions should be either true or false"
       );
@@ -278,7 +279,7 @@ export class Bank {
     return null;
   };
 
-  #validateIncludeTransactions(includeTransactions) {
+  validateIncludeTransactions(includeTransactions: boolean) {
     return typeof includeTransactions === "boolean";
   }
 }
