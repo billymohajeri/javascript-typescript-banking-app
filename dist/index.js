@@ -1,13 +1,10 @@
-"use strict";
 var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
     if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
 var _Transaction_validateTransactionAmount, _Transaction_validateTransactionDate;
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.Bank = exports.Branch = exports.Customer = exports.Transaction = void 0;
-class Transaction {
+export class Transaction {
     constructor(amount, date = new Date()) {
         _Transaction_validateTransactionAmount.set(this, (amount) => {
             return typeof amount === "number" && !isNaN(amount);
@@ -25,9 +22,8 @@ class Transaction {
         this.date = date;
     }
 }
-exports.Transaction = Transaction;
 _Transaction_validateTransactionAmount = new WeakMap(), _Transaction_validateTransactionDate = new WeakMap();
-class Customer {
+export class Customer {
     constructor(name, id) {
         this.validateCustomerName = (name) => {
             return typeof name === "string" && name.trim() !== "";
@@ -73,8 +69,7 @@ class Customer {
         this.transactions = [];
     }
 }
-exports.Customer = Customer;
-class Branch {
+export class Branch {
     constructor(name) {
         this.getName = () => {
             return this.name;
@@ -123,8 +118,7 @@ class Branch {
         return typeof amount === "number" && !isNaN(amount);
     }
 }
-exports.Branch = Branch;
-class Bank {
+export class Bank {
     constructor(name) {
         this.addBranch = (branch) => {
             if (this.validateBranch(branch) && !this.branches.includes(branch)) {
@@ -224,4 +218,3 @@ class Bank {
         return typeof includeTransactions === "boolean";
     }
 }
-exports.Bank = Bank;
