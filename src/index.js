@@ -91,8 +91,15 @@ export class Branch {
   #customers;
 
   constructor(name) {
+    if (!this.#validateBranchName(name)) {
+      throw new Error("Invalid branch name");
+    }
     this.#name = name;
     this.#customers = [];
+  }
+
+  #validateBranchName(name) {
+    return typeof name === "string" && name.trim() !== "";
   }
 
   getName = () => {
@@ -110,6 +117,8 @@ export class Branch {
     }
     return false;
   };
+  
+
 
   addCustomerTransaction = (customerId, amount) => {
     const customer = this.#customers.find((c) => c.getId() === customerId);
