@@ -139,10 +139,10 @@ export class Branch {
   }
 
   addCustomerTransaction = (customerId, amount) => {
-    if (!this.#validateCustomerId) {
+    if (!this.#validateCustomerId(customerId)) {
       throw new Error("Invalid customer ID");
     }
-    if (!this.#validateTransactionAmount) {
+    if (!this.#validateTransactionAmount(amount)) {
       throw new Error("Invalid transaction amount");
     }
 
@@ -170,7 +170,7 @@ export class Bank {
   }
 
   addBranch = (branch) => {
-    if (this.#validateBranch && !this.#branches.includes(branch)) {
+    if (this.#validateBranch(branch) && !this.#branches.includes(branch)) {
       this.#branches.push(branch);
       return true;
     }
@@ -210,8 +210,8 @@ export class Bank {
     if (
       this.#validateBranch(branch) &&
       this.checkBranch(branch) &&
-      this.#validateCustomerId &&
-      this.#validateTransactionAmount
+      this.#validateCustomerId(customerId) &&
+      this.#validateTransactionAmount(amount)
     ) {
       return branch.addCustomerTransaction(customerId, amount);
     }

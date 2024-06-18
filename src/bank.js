@@ -1,4 +1,4 @@
-import { Transaction, Customer, Branch, Bank } from "./index.js";
+import { Customer, Branch, Bank } from "./index.js";
 
 const arizonaBank = new Bank("Arizona");
 const westBranch = new Branch("West Branch");
