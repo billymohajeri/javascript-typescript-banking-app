@@ -148,10 +148,8 @@ export class Branch {
 
     const customer = this.#customers.find((c) => c.getId() === customerId);
     if (customer) {
-      customer.addTransaction(amount);
-      return true;
+      return customer.addTransaction(amount);
     }
-    return false;
   };
 }
 
